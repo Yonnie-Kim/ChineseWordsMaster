@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+# >>> 클라이언트에서 단어 input 연결 필요
 word = ""
 word = "生活"
 
@@ -38,6 +39,7 @@ print(entry_url)
 driver = webdriver.Chrome('/Users/YonnieK/Desktop/chromedriver')
 driver.get(entry_url)
 
+# >>> 여러가지 요소 한번에 불러올 수 있도록 수정
 try:
     pinyin = WebDriverWait(driver, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, "span.pronounce")))
