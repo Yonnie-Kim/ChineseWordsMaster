@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Webpage Title -->
+    <title>Chinese Word Master</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&family=Noto+Serif+SC:wght@500&family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      $(document).ready(function () {
+        $("#card-listing").html("");
+        listing();
+      });
+
+      function listing() {
+        $.ajax({
+          type: "GET",
+          url: "/wordlist",
+          data: {},
+          success: function (response) {
+            let wordlists = response["wordlist"];
+            for (let i = 0; i < wordlists.length; i++) {
+              make_card(
+                wordlists[i]["hanzi"],
+                wordlists[i]["url"],
+                wordlists[i]["pinyin"],
+                wordlists[i]["level"],
+                wordlists[i]["meanings"]
+              );
+            }
+          },
+        });
+      }
+
+      function make_card(hanzi, url, pinyin, level, meanings) {
+        let temp_html = `<div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              ${hanzi}<span class="badge badge-pill badge-info badge-level"
+                >${level}</span
+              >
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">${pinyin}</h6>
+            <p class="card-text">${meanings}</p>
+            <a href="${url}" target="_blank" class="card-link">Go to the dict page</a>
+            <a href="#" class="card-link">Delete</a>
+          </div>
+        </div>`;
+        $("#card-listing").append(temp_html);
+      }
+
+      function posting() {
+        let word = $("#word-input").val();
+        $.ajax({
+          type: "POST",
+          url: "/wordlist",
+          data: { word_give: word },
+          success: function (response) {
+            if (response["result"] == "success") {
+              alert("등록 성공!");
+            } else {
+              alert("서버 오류!");
+            }
+          },
+        });
+      }
+    </script>
+
+    <!-- style -->
+    <style type="text/css">
+      * {
+        font-family: "Noto Sans KR", sans-serif;
+      }
+      .wrap {
+        width: 80%;
+        margin: 10px auto 30px auto;
+      }
+      #header-title {
+        font-family: "Pacifico", cursive;
+        padding: 20px;
+      }
+      #word-input-form {
+        padding: 0px 20px 0px 20px;
+      }
+      .badge-level {
+        font-size: 40%;
+        margin-left: 5px;
+      }
+      .card-title {
+        font-family: "Noto Serif SC", serif;
+        font-size: 200%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <h1 id="header-title">Chinese Word Master</h1>
+        <form id="word-input-form">
+          <div class="form-row align-items-center">
+            <div class="col-sm-3 my-1">
+              <label class="sr-only" for="inlineFormInputName">Word</label>
+              <input
+                type="text"
+                class="form-control"
+                id="word-input"
+                placeholder="등록할 단어를 정확히 입력하세요."
+              />
+            </div>
+            <div class="col-auto my-1">
+              <button type="submit" class="btn btn-primary" onclick="posting()">
+                등록
+              </button>
+            </div>
+          </div>
+        </form>
+        <hr />
+      </div>
+      <!-- 가로 한줄당 최대 3개로 수정 -->
+      <div class="card-deck" id="card-listing"></div>
+    </div>
+  </body>
+</html>
