@@ -45,7 +45,7 @@ driver = webdriver.Chrome(
     '/Users/YonnieK/Desktop/chromedriver', options=options)
 driver.get(entry_url)
 
-# >>> 여러가지 요소 한번에 불러올 수 있도록 수정 - 대기 명령은 한번만 하도록 바꿔야 하나?
+# >>> 여러가지 요소 한번에 불러올 수 있도록 수정 - 대기 명령은 한번만 하도록
 try:
     pinyin = WebDriverWait(driver, 5).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, "span.pronounce")))
