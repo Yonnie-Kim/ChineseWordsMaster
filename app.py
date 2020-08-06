@@ -13,6 +13,8 @@ app = Flask(__name__)
 client = MongoClient('localhost', 27017)
 db = client.dbcwm
 
+# index 기능
+
 
 @app.route('/')
 def home():
@@ -67,6 +69,20 @@ def save_word():
     db.wordlist.insert_one(word)
 
     return jsonify({'result': 'success'})
+
+
+# hskwords기능
+@app.route('/hsk')
+def hskwords():
+    return render_template('hskwords.html')
+
+
+@app.route('/hskwords', methods=['GET'])
+def wordlisting():
+    # 모든 document 찾기 & _id 값은 출력에서 제외하기
+    result = list(db.hskwords.find({}, {'_id': 0}))
+    # wordlist라는 키 값으로 단어정보 내려주기
+    return jsonify({'result': 'success', 'wordlist': result})
 
 
 if __name__ == '__main__':
